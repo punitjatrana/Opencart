@@ -1,13 +1,11 @@
 package pageObjects;
 
-import java.time.Duration;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+
 
 public class HomePage extends BasePage {
 
@@ -16,7 +14,7 @@ public class HomePage extends BasePage {
 	}
 	
 	@FindBy(xpath="//span[normalize-space()='My Account']")
-	WebElement lnMyacount;
+	WebElement lnkMyAccount;
 	@FindBy(xpath="//a[normalize-space()='Register']")
 	WebElement lnkRegister;
 	
@@ -25,18 +23,22 @@ public class HomePage extends BasePage {
 	
 	public void clikMyAccount() {
 	    try {
-	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+	        // Wait for page to load completely
+	        Thread.sleep(3000);
 
-	        // Wait until the element is clickable
-	        wait.until(ExpectedConditions.elementToBeClickable(lnMyacount));
-
-	        // Click using JavaScript (more reliable in Jenkins)
+	        // Scroll to the element
 	        JavascriptExecutor js = (JavascriptExecutor) driver;
-	        js.executeScript("arguments[0].click();", lnMyacount);
+	        js.executeScript("arguments[0].scrollIntoView(true);", lnkMyAccount);
+
+	        // Small pause after scrolling
+	        Thread.sleep(1000);
+
+	        // Click using JavaScript
+	        js.executeScript("arguments[0].click();", lnkMyAccount);
 
 	    } catch (Exception e) {
 	        System.out.println("Unable to click My Account: " + e.getMessage());
-	        throw e;
+	        throw new RuntimeException(e);
 	    }
 	}
 	
