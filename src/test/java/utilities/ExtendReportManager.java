@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class ExtendReportManager implements ITestListener{
+public class ExtendReportManager extends BaseClass implements ITestListener{
 	
 	public ExtentSparkReporter sparkReporter; // UI of report
 	public ExtentReports extend; // populate common info on the report
@@ -69,21 +69,22 @@ public class ExtendReportManager implements ITestListener{
 	}
 	
 	public void onTestFailure(ITestResult result) {
-		test = extend.createTest(result.getTestClass().getName()); 
-		test.assignCategory(result.getMethod().getGroups());
-		
-		test.log(Status.FAIL, result.getName() +  "Test case is failed is: ");
-		test.log(Status.INFO, result.getThrowable() +  "Test case failed cause is: ");
-		
-		try {
-			String imgPath = new BaseClass().captureScreen(result.getName());
-			test.addScreenCaptureFromPath(imgPath);
-			
-		}
-		catch(IOException e1){
-			e1.printStackTrace();
-		}
-		
+	    test = extend.createTest(result.getTestClass().getName());
+	    test.assignCategory(result.getMethod().getGroups());
+
+	    test.log(Status.FAIL, result.getName() + " Test case failed");
+	    test.log(Status.INFO, result.getThrowable());
+
+	    try {
+	        String imgPath = captureScreen(result.getName());
+
+	        if (imgPath != null) {
+	            test.addScreenCaptureFromPath(imgPath);
+	        }
+
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
 	}
 	
 	@Override
@@ -94,16 +95,41 @@ public class ExtendReportManager implements ITestListener{
 	    test.log(Status.INFO, result.getThrowable().getMessage());
 	}
 	
+	@Override
 	public void onFinish(ITestContext context) {
-		extend.flush();
-		String pathOfExtendReport = System.getProperty("user.dir")+"\\reports\\"+repName;
-		File extendReport = new File(pathOfExtendReport);
-		
-		try {
-			Desktop.getDesktop().browse(extendReport.toURI());
-		}catch(IOException e) {
-			e.printStackTrace();
-		}
+	    
+	    // Write all test information to the Extent Report
+	    extend.flush();
+
+	    // Get the full path of the generated report
+	    String pathOfExtendReport = System.getProperty("user.dir")
+	            + File.separator
+	            + "reports"
+	            + File.separator
+	            + repName;
+
+	    File extendReport = new File(pathOfExtendReport);
+
+	    // Print report location in console
+	    System.out.println("Extent Report generated at: " + extendReport.getAbsolutePath());
+
+	    /*
+	     * Do NOT open the report automatically in Jenkins.
+	     * Jenkins runs as a background service and cannot launch a browser.
+	     *
+	     * If you want to open the report automatically when running locally,
+	     * uncomment the code below.
+	     */
+
+	    /*
+	    try {
+	        if (Desktop.isDesktopSupported() && extendReport.exists()) {
+	            Desktop.getDesktop().browse(extendReport.toURI());
+	        }
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	    */
 	}
 	
 

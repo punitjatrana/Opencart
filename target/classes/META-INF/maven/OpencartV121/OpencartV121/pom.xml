@@ -9,7 +9,7 @@
  <!-- this build tag is used to run or compile the framework on maven pom.xml-->
   <build>
     <plugins>
-        <plugin>
+        <plugin>	
              <groupId>org.apache.maven.plugins</groupId>
              <artifactId>maven-compiler-plugin</artifactId>
              <version>3.15.0</version>

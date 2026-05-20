@@ -157,20 +157,33 @@ public class BaseClass {
     }
 
     public String captureScreen(String tname) throws IOException {
+
+        // Check if driver is initialized
+        if (driver == null) {
+            System.out.println("Driver is null. Screenshot cannot be captured.");
+            return null;
+        }
+
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 
         TakesScreenshot takeScreenShot = (TakesScreenshot) driver;
         File sourceFile = takeScreenShot.getScreenshotAs(OutputType.FILE);
 
-        String targetFilePath = System.getProperty("user.dir")
-                + "\\screenshots\\"
+        // Create screenshots directory if it does not exist
+        String screenshotsDir = System.getProperty("user.dir") + File.separator + "screenshots";
+        File dir = new File(screenshotsDir);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        String targetFilePath = screenshotsDir
+                + File.separator
                 + tname + "_"
                 + timeStamp
                 + ".png";
 
         File targetFile = new File(targetFilePath);
 
-        // Better than renameTo()
         FileUtils.copyFile(sourceFile, targetFile);
 
         return targetFilePath;
