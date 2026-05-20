@@ -10,31 +10,38 @@ import testBase.BaseClass;
 
 public class TC002_LoginTest extends BaseClass {
 
-	@Test(groups={"regression","master"})
-	public void verify_login() {
-		logger.info("****  starting TC_002_LoginTest***");
-		try {
-		// Home page
-		HomePage hp = new HomePage(driver);
-		hp.clikMyAccount();
-		hp.clickLogin();
-		
-		//Login
-		LoginPage lp = new LoginPage(driver);
-		lp.setEmail(p.getProperty("email"));
-		lp.setPassword(p.getProperty("password"));
-		lp.clickLogin();
-		
+    @Test(groups = {"regression", "master"})
+    public void verify_login() {
+        logger.info("**** Starting TC002_LoginTest ****");
 
-		// MyAccount
-		MyAccountPage macc = new MyAccountPage(driver);
-		boolean targetPage = macc.isMyAccountPageExists();
-		Assert.assertTrue(targetPage);
-		//Assert.assertEquals(targetPage, true, "Login Failed");
-		}
-		catch(Exception e) {
-			Assert.fail(); 
-		}
-		logger.info("*** Finished TC002_LoginTest**");
-	}
+        try {
+            // Home Page
+            HomePage hp = new HomePage(driver);
+            hp.clikMyAccount();
+            hp.clickLogin();
+
+            // Login Page
+            LoginPage lp = new LoginPage(driver);
+            lp.setEmail(p.getProperty("email"));
+            lp.setPassword(p.getProperty("password"));
+            lp.clickLogin();
+
+            // My Account Page Validation
+            MyAccountPage macc = new MyAccountPage(driver);
+            boolean targetPage = macc.isMyAccountPageExists();
+
+            Assert.assertTrue(
+                    targetPage,
+                    "Login failed: My Account page was not displayed after login."
+            );
+
+            logger.info("Login test passed successfully.");
+
+        } catch (Exception e) {
+            logger.error("Test failed due to exception: " + e.getMessage(), e);
+            Assert.fail("Test failed due to exception: " + e.getMessage());
+        }
+
+        logger.info("**** Finished TC002_LoginTest ****");
+    }
 }

@@ -55,11 +55,14 @@ public class AccountRegistrationPage extends BasePage{
 	}
 	
 	public String getonfirmationMsg() {
-		try {
-			return(msgConfirmation.getText());
-		}catch(Exception e) {
-			return(e.getMessage());
-		}
+	    try {
+	        // Return the confirmation message displayed after successful registration
+	        return msgConfirmation.getText().trim();
+	    } catch (Exception e) {
+	        // Log the actual exception message and return null
+	        System.out.println("Unable to capture confirmation message: " + e.getMessage());
+	        return null;
+	    }
 	}
 
 }
