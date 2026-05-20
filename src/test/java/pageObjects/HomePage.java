@@ -1,8 +1,13 @@
 package pageObjects;
 
+import java.time.Duration;
+
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class HomePage extends BasePage {
 
@@ -19,7 +24,20 @@ public class HomePage extends BasePage {
 	WebElement linkLogin;
 	
 	public void clikMyAccount() {
-		lnMyacount.click();
+	    try {
+	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+	        // Wait until the element is clickable
+	        wait.until(ExpectedConditions.elementToBeClickable(lnMyacount));
+
+	        // Click using JavaScript (more reliable in Jenkins)
+	        JavascriptExecutor js = (JavascriptExecutor) driver;
+	        js.executeScript("arguments[0].click();", lnMyacount);
+
+	    } catch (Exception e) {
+	        System.out.println("Unable to click My Account: " + e.getMessage());
+	        throw e;
+	    }
 	}
 	
 	public void clickRegister() {
